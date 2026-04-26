@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vaults & HLP · Liquid Handbook</title>
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #1c1c22;
+    --bg2: #b2b5ba;
+    --bg3: rgba(0,0,0,0.08);
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.05);
+    --accent: #ffffff;
+    --accent-dim: rgba(255,255,255,0.09);
+    --accent-border: rgba(255,255,255,0.3);
+    --text: #ffffff;
+    --text2: #e8e8f0;
+    --text3: #c0c0d0;
+    --card: rgba(0,0,0,0.12);
+    --card2: #babdc2;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    background: #1c1c22;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Subtle noise texture overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(28,28,34,0.94);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .brand-icon {
+    width: 22px;
+    height: auto;
+  }
+
+  .nav-logo-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links a:hover {
+    color: var(--text);
+    background: rgba(58,47,143,0.07);
+  }
+
+  .nav-links a.active {
+    color: var(--text);
+    background: rgba(58,47,143,0.07);
+  }
+
+  /* PAGE WRAP */
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 108px 48px 96px;
+  }
+
+  /* BREADCRUMB */
+  .breadcrumb {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .breadcrumb a { color: rgba(255,255,255,0.65); text-decoration: none; }
+  .breadcrumb a:hover { color: #ffffff; }
+  .breadcrumb span { color: var(--border2); }
+
+  /* PAGE TAG */
+  .page-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: #ffffff;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    padding: 5px 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* HEADINGS */
+  h1 {
+    font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    margin-bottom: 22px;
+    color: var(--text);
+  }
+
+  h1 em {
+    font-style: normal;
+    color: #ffffff;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 52px 0 14px;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 18px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* BODY TEXT */
+  p {
+    color: var(--text2);
+    line-height: 1.8;
+    margin-bottom: 14px;
+    font-size: 0.94rem;
+  }
+
+  strong { color: var(--text); font-weight: 600; }
+
+  a { color: #ffffff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* LEAD */
+  .lead {
+    font-size: 1.05rem;
+    color: var(--text2);
+    line-height: 1.75;
+    margin-bottom: 52px;
+    padding: 20px 22px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid rgba(255,255,255,0.7);
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .card:hover {
+    border-color: var(--border2);
+  }
+
+  /* NAV FOOTER */
+  .nav-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 72px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 12px 22px;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-btn:hover {
+    border-color: var(--accent-border);
+    color: var(--text);
+    text-decoration: none;
+    background: rgba(58,47,143,0.07);
+  }
+
+  /* DIVIDER */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  /* MONO LABEL */
+  .mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.1em;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer p { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: rgba(255,255,255,0.65); margin: 0; }
+  footer a { color: rgba(255,255,255,0.65); }
+  footer a:hover { color: #ffffff; }
+
+
+  .stat-row { display: flex; gap: 10px; margin: 28px 0; flex-wrap: wrap; }
+  .stat-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 8px; padding: 18px 24px; flex: 1; min-width: 130px; }
+  .stat-box .num { font-size: 1.9rem; font-weight: 700; color: #ffffff; letter-spacing: -0.03em; font-family: 'DM Mono', monospace; }
+  .stat-box .lbl { font-size: 0.68rem; color: rgba(255,255,255,0.65); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+
+  .info-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 22px; }
+  .info-card h4 { font-size: 0.82rem; font-weight: 600; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .info-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.65; margin-bottom: 0; }
+  .info-card ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .info-card ul li { font-size: 0.82rem; color: var(--text2); padding-left: 14px; position: relative; line-height: 1.5; }
+  .info-card ul li::before { content: '—'; position: absolute; left: 0; color: rgba(255,255,255,0.65); font-size: 0.7rem; }
+
+  .steps { display: flex; flex-direction: column; margin: 20px 0; }
+  .step { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); border-top: none; padding: 20px 24px; display: flex; gap: 16px; align-items: flex-start; }
+  .step:first-child { border-top: 1px solid rgba(255,255,255,0.08); border-radius: 8px 8px 0 0; }
+  .step:last-child { border-radius: 0 0 8px 8px; }
+  .step-num { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: #ffffff; background: var(--accent-dim); border: 1px solid var(--accent-border); padding: 3px 8px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; letter-spacing: 0.1em; }
+  .step strong { display: block; font-size: 0.88rem; color: var(--text); margin-bottom: 4px; }
+  .step span { font-size: 0.8rem; color: var(--text2); line-height: 1.6; }
+
+  .callout { background: var(--card); border: 1px solid var(--border); border-left: 3px solid rgba(255,255,255,0.7); border-radius: 0 8px 8px 0; padding: 20px 22px; margin: 24px 0; }
+  .callout .callout-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: #ffffff; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .callout p { font-size: 0.88rem; color: var(--text); margin: 0; line-height: 1.7; }
+
+  .warn { background: rgba(255,80,60,0.08); border: 1px solid rgba(255,80,60,0.25); border-left: 3px solid #ff7060; border-radius: 0 8px 8px 0; padding: 20px 22px; margin: 24px 0; }
+  .warn .warn-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: #ff7060; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .warn p { font-size: 0.88rem; color: var(--text); margin: 0; line-height: 1.7; }
+
+  .quote-block { background: rgba(58,47,143,0.07); border: 1px solid var(--border); border-radius: 8px; padding: 24px 28px; margin: 28px 0; font-size: 1rem; font-style: italic; color: var(--text2); line-height: 1.7; }
+  .quote-block cite { display: block; font-style: normal; font-family: 'DM Mono', monospace; font-size: 0.62rem; color: rgba(255,255,255,0.65); margin-top: 12px; letter-spacing: 0.1em; }
+
+  .formula { background: rgba(58,47,143,0.07); border: 1px solid var(--border); border-radius: 8px; padding: 22px 26px; margin: 20px 0; }
+  .formula .f-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: rgba(255,255,255,0.65); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+  .formula .f-eq { font-family: 'DM Mono', monospace; font-size: 0.9rem; color: #ffffff; margin-bottom: 10px; line-height: 1.6; }
+  .formula .f-note { font-size: 0.8rem; color: var(--text2); line-height: 1.6; margin: 0; }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+  .tag { background: rgba(58,47,143,0.07); border: 1px solid var(--border); border-radius: 100px; padding: 6px 14px; font-size: 0.78rem; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+  .tag .tag-icon { font-size: 0.9rem; }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 516.855 678.605"><path d="M472.642,275.575L307.131,26.133c-23.121-34.844-74.288-34.844-97.409,0L44.21,275.575c-16.421,24.28-28.823,51.501-36.251,80.707-5.197,20.434-7.959,41.841-7.959,63.895,0,142.725,115.702,258.428,258.427,258.428s258.428-115.703,258.428-258.428c0-53.571-16.301-103.333-44.213-144.601h0Z" fill="#ffffff"/></svg>
+    <span class="nav-logo-text">Handbook</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="what-is-liquid.html">About</a></li>
+<li><a href="trading.html">Trading</a></li>
+<li><a href="funding-rates.html">Funding</a></li>
+<li><a href="liquidations.html">Liquidations</a></li>
+<li><a href="vaults.html" class="active">Vaults</a></li>
+<li><a href="points.html">Rewards</a></li>
+<li><a href="glossary.html">Glossary</a></li>
+
+  </ul>
+</nav>
+
+<div class="page-wrap">
+  <div class="breadcrumb"><a href="index.html">Home</a> <span>/</span> Vaults & HLP</div>
+  <div class="page-tag">06 · Yield</div>
+  <h1>Vaults &<br><em>HLP</em></h1>
+  <div class="lead">Vaults let idle capital earn yield by participating in onchain trading strategies. HLP is Hyperliquid's protocol vault — the one at the core of the exchange itself.</div>
+
+  <h2>What is a Vault?</h2>
+  <p>An onchain pooled account on Hyperliquid. Multiple depositors contribute USDC, the vault executes a strategy (trading, market-making, liquidity), and PnL is shared pro rata.</p>
+  <div class="grid-2">
+    <div class="info-card">
+      <h4>User-Run Vaults</h4>
+      <ul>
+        <li>Created by individual traders or teams</li>
+        <li>Any strategy the vault leader chooses</li>
+        <li>Vault leader earns 10% profit share</li>
+        <li>Depositors get the remaining 90% pro rata</li>
+        <li>Variable risk — depends on strategy</li>
+      </ul>
+    </div>
+    <div class="info-card" style="border-color: var(--accent-border);">
+      <h4>HLP — Protocol Vault</h4>
+      <ul>
+        <li>Hyperliquid's own community-owned vault</li>
+        <li>No individual leader — protocol-managed</li>
+        <li>No 10% profit share taken</li>
+        <li>Powers core exchange infrastructure</li>
+        <li>4-day deposit lock-up period</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>What HLP Does</h2>
+  <div class="steps">
+    <div class="step"><span class="step-num">01</span><div><strong>Provides Liquidity</strong><span>Runs multiple market-making strategies to ensure tight spreads and deep liquidity on Hyperliquid markets.</span></div></div>
+    <div class="step"><span class="step-num">02</span><div><strong>Performs Liquidations</strong><span>Acts as the backstop liquidator — absorbing underwater positions to keep the system solvent during volatile conditions.</span></div></div>
+    <div class="step"><span class="step-num">03</span><div><strong>Supplies USDC to Earn</strong><span>Provides stablecoin liquidity to Hyperliquid's Earn product, earning yield on idle capital.</span></div></div>
+    <div class="step"><span class="step-num">04</span><div><strong>Accrues Trading Fees</strong><span>A portion of platform trading fees flows into HLP, contributing directly to depositor returns.</span></div></div>
+  </div>
+
+  <h2>HLP At a Glance</h2>
+  <div class="stat-row">
+    <div class="stat-box"><div class="num">4</div><div class="lbl">Day Lock-Up</div></div>
+    <div class="stat-box"><div class="num">0%</div><div class="lbl">Leader Fee</div></div>
+    <div class="stat-box"><div class="num">USDC</div><div class="lbl">Collateral</div></div>
+    <div class="stat-box"><div class="num">Protocol</div><div class="lbl">Managed By</div></div>
+  </div>
+  <p>The 4-day lock-up means you can only withdraw 4 days after your most recent deposit. Plan liquidity needs accordingly.</p>
+
+  <div class="warn">
+    <div class="warn-label">⚠ Not Passive Savings</div>
+    <p>Depositing into any vault — including HLP — is not a savings account. You are directly exposed to the strategy's outcomes. Vaults can lose money. Past performance does not guarantee future returns. Evaluate carefully before depositing.</p>
+  </div>
+
+  <div class="nav-footer">
+    <a href="liquidations.html" class="nav-btn">← Liquidations</a>
+    <a href="points.html" class="nav-btn">Points & Referrals →</a>
+  </div>
+</div>
+
+<footer>
+  <p>Built from <a href="https://docs.tryliquid.xyz" target="_blank">docs.tryliquid.xyz</a> &nbsp;·&nbsp; Unofficial community handbook</p>
+  <p><a href="https://tryliquid.xyz" target="_blank">tryliquid.xyz ↗</a></p>
+</footer>
+</body>
+</html>
