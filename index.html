@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liquid Handbook · Liquid Handbook</title>
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #1c1c22;
+    --bg2: #b2b5ba;
+    --bg3: rgba(0,0,0,0.08);
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.05);
+    --accent: #ffffff;
+    --accent-dim: rgba(255,255,255,0.09);
+    --accent-border: rgba(255,255,255,0.3);
+    --text: #ffffff;
+    --text2: #e8e8f0;
+    --text3: #c0c0d0;
+    --card: rgba(0,0,0,0.12);
+    --card2: #babdc2;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    background: #1c1c22;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Subtle noise texture overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(28,28,34,0.94);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .brand-icon {
+    width: 22px;
+    height: auto;
+  }
+
+  .nav-logo-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links a:hover {
+    color: var(--text);
+    background: rgba(58,47,143,0.07);
+  }
+
+  .nav-links a.active {
+    color: var(--text);
+    background: rgba(58,47,143,0.07);
+  }
+
+  /* PAGE WRAP */
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 108px 48px 96px;
+  }
+
+  /* BREADCRUMB */
+  .breadcrumb {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .breadcrumb a { color: rgba(255,255,255,0.65); text-decoration: none; }
+  .breadcrumb a:hover { color: #ffffff; }
+  .breadcrumb span { color: var(--border2); }
+
+  /* PAGE TAG */
+  .page-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: #ffffff;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    padding: 5px 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* HEADINGS */
+  h1 {
+    font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    margin-bottom: 22px;
+    color: var(--text);
+  }
+
+  h1 em {
+    font-style: normal;
+    color: #ffffff;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 52px 0 14px;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 18px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* BODY TEXT */
+  p {
+    color: var(--text2);
+    line-height: 1.8;
+    margin-bottom: 14px;
+    font-size: 0.94rem;
+  }
+
+  strong { color: var(--text); font-weight: 600; }
+
+  a { color: #ffffff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* LEAD */
+  .lead {
+    font-size: 1.05rem;
+    color: var(--text2);
+    line-height: 1.75;
+    margin-bottom: 52px;
+    padding: 20px 22px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid rgba(255,255,255,0.7);
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .card:hover {
+    border-color: var(--border2);
+  }
+
+  /* NAV FOOTER */
+  .nav-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 72px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 12px 22px;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-btn:hover {
+    border-color: var(--accent-border);
+    color: var(--text);
+    text-decoration: none;
+    background: rgba(58,47,143,0.07);
+  }
+
+  /* DIVIDER */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  /* MONO LABEL */
+  .mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.1em;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer p { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: rgba(255,255,255,0.65); margin: 0; }
+  footer a { color: rgba(255,255,255,0.65); }
+  footer a:hover { color: #ffffff; }
+
+
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 48px 60px;
+    background: #1c1c22;
+  }
+
+  .hero-logo {
+    display: block;
+    width: min(360px, 85vw);
+    height: auto;
+    min-height: 80px;
+    margin-bottom: 52px;
+    opacity: 1;
+    animation: fadeUp 0.7s ease both;
+  }
+  .hero-logo svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    animation: fadeUp 0.6s 0.1s ease both;
+    opacity: 0;
+    animation-fill-mode: both;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.0;
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s 0.15s ease both;
+    opacity: 0;
+    animation-fill-mode: both;
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: #ffffff;
+    max-width: 500px;
+    line-height: 1.75;
+    margin-bottom: 12px;
+    animation: fadeUp 0.6s 0.2s ease both;
+    opacity: 0;
+    animation-fill-mode: both;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    font-weight: 500;
+  }
+
+  .hero-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.08em;
+    margin-bottom: 0;
+    animation: fadeUp 0.6s 0.25s ease both;
+    opacity: 0;
+    animation-fill-mode: both;
+  }
+
+  /* GRID */
+  .sections-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 48px 96px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    animation: fadeUp 0.6s 0.35s ease both;
+    opacity: 0;
+    animation-fill-mode: both;
+  }
+
+  .section-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 26px;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    transition: all 0.18s;
+    position: relative;
+  }
+
+  .section-card:hover {
+    border-color: var(--accent-border);
+    background: rgba(58,47,143,0.07);
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+
+  .card-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.15em;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .card-desc {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+  }
+
+  .card-arrow {
+    position: absolute;
+    top: 26px; right: 26px;
+    color: var(--border2);
+    font-size: 0.9rem;
+    transition: all 0.18s;
+  }
+
+  .section-card:hover .card-arrow {
+    color: #ffffff;
+    transform: translate(2px, -2px);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 516.855 678.605"><path d="M472.642,275.575L307.131,26.133c-23.121-34.844-74.288-34.844-97.409,0L44.21,275.575c-16.421,24.28-28.823,51.501-36.251,80.707-5.197,20.434-7.959,41.841-7.959,63.895,0,142.725,115.702,258.428,258.427,258.428s258.428-115.703,258.428-258.428c0-53.571-16.301-103.333-44.213-144.601h0Z" fill="#ffffff"/></svg>
+    <span class="nav-logo-text">Handbook</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="what-is-liquid.html">About</a></li>
+<li><a href="trading.html">Trading</a></li>
+<li><a href="funding-rates.html">Funding</a></li>
+<li><a href="liquidations.html">Liquidations</a></li>
+<li><a href="vaults.html">Vaults</a></li>
+<li><a href="points.html">Rewards</a></li>
+<li><a href="glossary.html">Glossary</a></li>
+
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow">Community Handbook · v2.0</div>
+  <div class="hero-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2920.336 795.318"><g><g><g><g><path d="M724.169,639.854V41.448h111.201v499.64h280.542v98.766h-391.743Z" fill="#ffffff"/><path d="M1163.042,639.85V209.098h104.594v430.753h-104.594ZM1158.908,146.85V37.294h113.708v109.556h-113.708Z" fill="#ffffff"/><path d="M1534.388,646.488c-128.65,0-205.833-91.295-205.833-222.428s77.996-221.602,204.139-221.602c53.127,0,99.613,22.409,124.516,55.608v-48.968h104.56v585.956h-104.56v-205.833c-19.923,32.371-67.222,57.267-122.822,57.267ZM1549.33,556.023c68.882,0,114.521-52.287,114.521-131.963,0-78.847-45.639-131.136-114.521-131.136s-114.555,52.289-114.555,131.136,45.639,131.963,114.555,131.963Z" fill="#ffffff"/><path d="M2239.403,209.099v430.752h-104.594v-66.395c-28.224,43.986-77.996,73.036-137.764,73.036-93.785,0-156.874-61.418-156.874-155.203V209.099h104.594v258.12c0,50.626,32.357,86.318,82.977,86.318,67.222,0,107.067-58.097,107.067-155.206v-189.231h104.594Z" fill="#ffffff"/><path d="M2321.499,639.85V209.098h104.594v430.753h-104.594ZM2317.365,146.85V37.294h113.708v109.556h-113.708Z" fill="#ffffff"/><path d="M2692.811,646.491c-128.65,0-205.833-91.298-205.833-222.432s78.03-221.602,204.173-221.602c53.127,0,99.579,22.409,124.482,55.608V34.804h104.594v605.046h-104.594v-50.626c-19.889,32.367-67.222,57.267-122.822,57.267ZM2707.754,556.023c68.882,0,114.521-52.287,114.521-131.963,0-78.847-45.639-131.136-114.521-131.136s-114.555,52.289-114.555,131.136,45.673,131.963,114.555,131.963Z" fill="#ffffff"/><path d="M472.63,276.814L307.116,27.374c-23.108-34.845-74.269-34.845-97.411,0L44.209,276.814c-16.422,24.28-28.823,51.5-36.25,80.708-5.198,20.434-7.959,41.841-7.959,63.895,0,142.724,115.7,258.424,258.428,258.424s258.418-115.7,258.418-258.424c0-53.571-16.297-103.335-44.216-144.602Z" fill="#ffffff"/></g></g></g></g></svg></div>
+  <p class="hero-sub">Everything you need to understand Liquid — the non-custodial perp aggregator letting you trade any market, anywhere, anytime.</p>
+  <p class="hero-badge">Backed by Paradigm · $7.6M Seed · docs sourced from docs.tryliquid.xyz</p>
+</section>
+
+<div class="sections-wrap">
+  <div class="section-label">Sections</div>
+  <div class="sections-grid">
+    <a href="what-is-liquid.html" class="section-card">
+      <div class="card-num">01 / About</div>
+      <div class="card-title">What is Liquid?</div>
+      <div class="card-desc">The big picture — markets, mission, and why Liquid exists.</div>
+      <span class="card-arrow">↗</span>
+    </a>
+    <a href="perpetual-futures.html" class="section-card">
+      <div class="card-num">02 / Basics</div>
+      <div class="card-title">Perpetual Futures</div>
+      <div class="card-desc">What perps are, how funding works, long vs short.</div>
+      <span class="card-arrow">↗</span>
+    </a>
+    <a href="trading.html" class="section-card">
+      <div class="card-num">03 / Trading</div>
+      <div class="card-title">Trading on Liquid</div>
+      <div class="card-desc">Leverage, TP/SL, TWAP orders, fees by venue, quickstart.</div>
+      <span class="card-arrow">↗</span>
+    </a>
+    <a href="funding-rates.html" class="section-card">
+      <div class="card-num">04 / Mechanics</div>
+      <div class="card-title">Funding Rates</div>
+      <div class="card-desc">How funding anchors perp prices to spot. What it costs to hold.</div>
+      <span class="card-arrow">↗</span>
+    </a>
+    <a href="liquidations.html" class="section-card">
+      <div class="card-num">05 / Risk</div>
+      <div class="card-title">Liquidations</div>
+      <div class="card-desc">When and how liquidations happen. How to protect yourself.</div>
+      <span class="card-arrow">↗</span>
+    </a>
+    <a href="vaults.html" class="section-card">
+      <div class="card-num">06 / Yield</div>
+      <div class="card-title">Vaults & HLP</div>
+      <div class="card-desc">Deposit into strategy vaults or Hyperliquid's protocol vault.</div>
+      <span class="card-arrow">↗</span>
+    </a>
+    <a href="points.html" class="section-card">
+      <div class="card-num">07 / Rewards</div>
+      <div class="card-title">Points & Referrals</div>
+      <div class="card-desc">Seasons, point distribution, referral bonuses, claiming rewards.</div>
+      <span class="card-arrow">↗</span>
+    </a>
+    <a href="glossary.html" class="section-card">
+      <div class="card-num">08 / Reference</div>
+      <div class="card-title">Glossary</div>
+      <div class="card-desc">Quick definitions for every term you'll hit on Liquid.</div>
+      <span class="card-arrow">↗</span>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <p>Built from <a href="https://docs.tryliquid.xyz" target="_blank">docs.tryliquid.xyz</a> &nbsp;·&nbsp; Unofficial community handbook</p>
+  <p><a href="https://tryliquid.xyz" target="_blank">tryliquid.xyz ↗</a></p>
+</footer>
+</body>
+</html>
