@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glossary · Liquid Handbook</title>
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #1c1c22;
+    --bg2: #b2b5ba;
+    --bg3: rgba(0,0,0,0.08);
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.05);
+    --accent: #ffffff;
+    --accent-dim: rgba(255,255,255,0.09);
+    --accent-border: rgba(255,255,255,0.3);
+    --text: #ffffff;
+    --text2: #e8e8f0;
+    --text3: #c0c0d0;
+    --card: rgba(0,0,0,0.12);
+    --card2: #babdc2;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    background: #1c1c22;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Subtle noise texture overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(28,28,34,0.94);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .brand-icon {
+    width: 22px;
+    height: auto;
+  }
+
+  .nav-logo-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links a:hover {
+    color: var(--text);
+    background: rgba(58,47,143,0.07);
+  }
+
+  .nav-links a.active {
+    color: var(--text);
+    background: rgba(58,47,143,0.07);
+  }
+
+  /* PAGE WRAP */
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 108px 48px 96px;
+  }
+
+  /* BREADCRUMB */
+  .breadcrumb {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .breadcrumb a { color: rgba(255,255,255,0.65); text-decoration: none; }
+  .breadcrumb a:hover { color: #ffffff; }
+  .breadcrumb span { color: var(--border2); }
+
+  /* PAGE TAG */
+  .page-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: #ffffff;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    padding: 5px 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* HEADINGS */
+  h1 {
+    font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    margin-bottom: 22px;
+    color: var(--text);
+  }
+
+  h1 em {
+    font-style: normal;
+    color: #ffffff;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 52px 0 14px;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 18px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* BODY TEXT */
+  p {
+    color: var(--text2);
+    line-height: 1.8;
+    margin-bottom: 14px;
+    font-size: 0.94rem;
+  }
+
+  strong { color: var(--text); font-weight: 600; }
+
+  a { color: #ffffff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* LEAD */
+  .lead {
+    font-size: 1.05rem;
+    color: var(--text2);
+    line-height: 1.75;
+    margin-bottom: 52px;
+    padding: 20px 22px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid rgba(255,255,255,0.7);
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .card:hover {
+    border-color: var(--border2);
+  }
+
+  /* NAV FOOTER */
+  .nav-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 72px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 12px 22px;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-btn:hover {
+    border-color: var(--accent-border);
+    color: var(--text);
+    text-decoration: none;
+    background: rgba(58,47,143,0.07);
+  }
+
+  /* DIVIDER */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  /* MONO LABEL */
+  .mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.1em;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer p { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: rgba(255,255,255,0.65); margin: 0; }
+  footer a { color: rgba(255,255,255,0.65); }
+  footer a:hover { color: #ffffff; }
+
+
+  .stat-row { display: flex; gap: 10px; margin: 28px 0; flex-wrap: wrap; }
+  .stat-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 8px; padding: 18px 24px; flex: 1; min-width: 130px; }
+  .stat-box .num { font-size: 1.9rem; font-weight: 700; color: #ffffff; letter-spacing: -0.03em; font-family: 'DM Mono', monospace; }
+  .stat-box .lbl { font-size: 0.68rem; color: rgba(255,255,255,0.65); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+
+  .info-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 22px; }
+  .info-card h4 { font-size: 0.82rem; font-weight: 600; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .info-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.65; margin-bottom: 0; }
+  .info-card ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .info-card ul li { font-size: 0.82rem; color: var(--text2); padding-left: 14px; position: relative; line-height: 1.5; }
+  .info-card ul li::before { content: '—'; position: absolute; left: 0; color: rgba(255,255,255,0.65); font-size: 0.7rem; }
+
+  .steps { display: flex; flex-direction: column; margin: 20px 0; }
+  .step { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); border-top: none; padding: 20px 24px; display: flex; gap: 16px; align-items: flex-start; }
+  .step:first-child { border-top: 1px solid rgba(255,255,255,0.08); border-radius: 8px 8px 0 0; }
+  .step:last-child { border-radius: 0 0 8px 8px; }
+  .step-num { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: #ffffff; background: var(--accent-dim); border: 1px solid var(--accent-border); padding: 3px 8px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; letter-spacing: 0.1em; }
+  .step strong { display: block; font-size: 0.88rem; color: var(--text); margin-bottom: 4px; }
+  .step span { font-size: 0.8rem; color: var(--text2); line-height: 1.6; }
+
+  .callout { background: var(--card); border: 1px solid var(--border); border-left: 3px solid rgba(255,255,255,0.7); border-radius: 0 8px 8px 0; padding: 20px 22px; margin: 24px 0; }
+  .callout .callout-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: #ffffff; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .callout p { font-size: 0.88rem; color: var(--text); margin: 0; line-height: 1.7; }
+
+  .warn { background: rgba(255,80,60,0.08); border: 1px solid rgba(255,80,60,0.25); border-left: 3px solid #ff7060; border-radius: 0 8px 8px 0; padding: 20px 22px; margin: 24px 0; }
+  .warn .warn-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: #ff7060; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .warn p { font-size: 0.88rem; color: var(--text); margin: 0; line-height: 1.7; }
+
+  .quote-block { background: rgba(58,47,143,0.07); border: 1px solid var(--border); border-radius: 8px; padding: 24px 28px; margin: 28px 0; font-size: 1rem; font-style: italic; color: var(--text2); line-height: 1.7; }
+  .quote-block cite { display: block; font-style: normal; font-family: 'DM Mono', monospace; font-size: 0.62rem; color: rgba(255,255,255,0.65); margin-top: 12px; letter-spacing: 0.1em; }
+
+  .formula { background: rgba(58,47,143,0.07); border: 1px solid var(--border); border-radius: 8px; padding: 22px 26px; margin: 20px 0; }
+  .formula .f-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: rgba(255,255,255,0.65); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+  .formula .f-eq { font-family: 'DM Mono', monospace; font-size: 0.9rem; color: #ffffff; margin-bottom: 10px; line-height: 1.6; }
+  .formula .f-note { font-size: 0.8rem; color: var(--text2); line-height: 1.6; margin: 0; }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+  .tag { background: rgba(58,47,143,0.07); border: 1px solid var(--border); border-radius: 100px; padding: 6px 14px; font-size: 0.78rem; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+  .tag .tag-icon { font-size: 0.9rem; }
+
+  .search-wrap { margin-bottom: 28px; position: relative; }
+  .search-wrap input {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 13px 16px 13px 44px;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    outline: none; transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--accent-border); }
+  .search-wrap input::placeholder { color: rgba(255,255,255,0.65); }
+  .search-wrap .search-ico { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.65); font-size: 1rem; pointer-events: none; }
+
+  .alpha-group { margin-bottom: 4px; }
+  .alpha-head { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: #ffffff; letter-spacing: 0.2em; text-transform: uppercase; padding: 12px 0 8px; border-bottom: 1px solid var(--border); margin-bottom: 0; }
+  .term-row { display: grid; grid-template-columns: 180px 1fr; gap: 16px; background: var(--card); border: 1px solid var(--border); border-top: none; padding: 16px 20px; transition: background 0.12s; }
+  .term-row:first-of-type { border-top: 1px solid var(--border) !important; }
+  .term-row:hover { background: rgba(58,47,143,0.07); }
+  .term-word { font-family: 'DM Mono', monospace; font-size: 0.76rem; font-weight: 500; color: var(--text); padding-top: 1px; }
+  .term-def { font-size: 0.82rem; color: var(--text2); line-height: 1.65; }
+  .hidden { display: none !important; }
+  .no-results { text-align: center; padding: 48px; color: rgba(255,255,255,0.65); font-family: 'DM Mono', monospace; font-size: 0.78rem; display: none; }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 516.855 678.605"><path d="M472.642,275.575L307.131,26.133c-23.121-34.844-74.288-34.844-97.409,0L44.21,275.575c-16.421,24.28-28.823,51.501-36.251,80.707-5.197,20.434-7.959,41.841-7.959,63.895,0,142.725,115.702,258.428,258.427,258.428s258.428-115.703,258.428-258.428c0-53.571-16.301-103.333-44.213-144.601h0Z" fill="#ffffff"/></svg>
+    <span class="nav-logo-text">Handbook</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="what-is-liquid.html">About</a></li>
+<li><a href="trading.html">Trading</a></li>
+<li><a href="funding-rates.html">Funding</a></li>
+<li><a href="liquidations.html">Liquidations</a></li>
+<li><a href="vaults.html">Vaults</a></li>
+<li><a href="points.html">Rewards</a></li>
+<li><a href="glossary.html" class="active">Glossary</a></li>
+
+  </ul>
+</nav>
+
+<div class="page-wrap">
+  <div class="breadcrumb"><a href="index.html">Home</a> <span>/</span> Glossary</div>
+  <div class="page-tag">08 · Reference</div>
+  <h1>The <em>Glossary</em></h1>
+  <div class="lead">Quick definitions for every term you'll encounter on Liquid — from perp basics to margin mechanics and venue specifics.</div>
+
+  <div class="search-wrap">
+    <span class="search-ico">⌕</span>
+    <input type="text" id="gsearch" placeholder="Search terms..." oninput="filterGlossary()">
+  </div>
+
+  <div id="gcontent">
+
+    <div class="alpha-group" data-g="B">
+      <div class="alpha-head">B</div>
+      <div class="term-row" data-t="backstop liquidation"><div class="term-word">Backstop Liquidation</div><div class="term-def">A failsafe mechanism. When a position can't close via normal order book execution, it's transferred to a designated liquidator vault (like HLP). Keeps the system solvent during volatile or illiquid conditions. Some or all maintenance margin may not be returned.</div></div>
+      <div class="term-row" data-t="bps basis points"><div class="term-word">BPS (Basis Points)</div><div class="term-def">1 basis point = 0.01%. Liquid charges 5 bps (0.05%) on Hyperliquid perp trades. Used to express small fee percentages precisely without fractions.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="C">
+      <div class="alpha-head">C</div>
+      <div class="term-row" data-t="collateral usdc margin"><div class="term-word">Collateral</div><div class="term-def">The funds you post to back a leveraged position. On Liquid (via Hyperliquid), collateral is USDC. What's at risk if the trade moves against you.</div></div>
+      <div class="term-row" data-t="cross margin shared"><div class="term-word">Cross Margin</div><div class="term-def">A margin mode where all eligible positions share a single collateral pool. More capital efficient but riskier — a liquidation event in one cross position can affect the collateral available for others.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="F">
+      <div class="alpha-head">F</div>
+      <div class="term-row" data-t="funding interval hourly 8 hour"><div class="term-word">Funding Interval</div><div class="term-def">How often funding payments exchange between longs and shorts — typically every 1 hour or every 8 hours. Longer holds accumulate more funding cost or income.</div></div>
+      <div class="term-row" data-t="funding rate payment longs shorts"><div class="term-word">Funding Rate</div><div class="term-def">A periodic payment between long and short traders to keep perp price aligned with spot. Positive funding = longs pay shorts. Negative = shorts pay longs. The platform collects none of it.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="H">
+      <div class="alpha-head">H</div>
+      <div class="term-row" data-t="hlp hyper liquidity provider protocol vault"><div class="term-word">HLP</div><div class="term-def">Hyper Liquidity Provider — Hyperliquid's protocol vault. Community-owned, protocol-managed. Provides market-making liquidity, performs liquidations, supplies USDC to Earn, and accrues trading fees. 4-day deposit lock-up. No 10% leader fee.</div></div>
+      <div class="term-row" data-t="hyperliquid dex layer 1"><div class="term-word">Hyperliquid</div><div class="term-def">A high-performance Layer-1 blockchain optimised for onchain perpetuals trading. Liquid routes a significant portion of orders through Hyperliquid's HyperCore order book engine.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="I">
+      <div class="alpha-head">I</div>
+      <div class="term-row" data-t="initial margin open position"><div class="term-word">Initial Margin</div><div class="term-def">Collateral required to open a leveraged position. = Position Notional ÷ Leverage. Reserved while your position is open — cannot be freely withdrawn while backing risk.</div></div>
+      <div class="term-row" data-t="isolated margin position specific"><div class="term-word">Isolated Margin</div><div class="term-def">A margin mode where collateral is assigned to a single position only. Liquidation of that position only affects its own collateral — all other positions and balances remain untouched.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="L">
+      <div class="alpha-head">L</div>
+      <div class="term-row" data-t="leverage multiplier position size"><div class="term-word">Leverage</div><div class="term-def">A multiplier on your position size relative to collateral. 10x = you control $10,000 with $1,000. Amplifies gains and losses equally. Liquid supports up to 200x on some assets.</div></div>
+      <div class="term-row" data-t="liquidation force close margin"><div class="term-word">Liquidation</div><div class="term-def">When account equity falls below maintenance margin and the system force-closes your position to prevent further losses. Triggered by mark price, not last traded price.</div></div>
+      <div class="term-row" data-t="long buy bullish"><div class="term-word">Long</div><div class="term-def">A trade that profits when the asset price goes up. You go long when you believe an asset will increase in value.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="M">
+      <div class="alpha-head">M</div>
+      <div class="term-row" data-t="maintenance margin minimum collateral"><div class="term-word">Maintenance Margin</div><div class="term-def">The minimum collateral to keep a position open. Lower than initial margin. When equity drops below this level, liquidation is triggered. Varies by asset and leverage tier.</div></div>
+      <div class="term-row" data-t="margin collateral skin in game"><div class="term-word">Margin</div><div class="term-def">The collateral you post to open and hold a leveraged position. Think of it as your skin in the game — it's what you risk on each trade.</div></div>
+      <div class="term-row" data-t="mark price fair value oracle"><div class="term-word">Mark Price</div><div class="term-def">A fair reference price used for PnL calculation, TP/SL triggers, and liquidation. Derived from oracle data + order book conditions — not just last traded price. Protects against unfair liquidations from momentary wicks.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="O">
+      <div class="alpha-head">O</div>
+      <div class="term-row" data-t="oracle price external spot reference"><div class="term-word">Oracle Price</div><div class="term-def">A fair reference price for an asset derived from external spot markets and institutional data providers (e.g. Pyth). Used to calculate funding rates and mark price. The benchmark the perp is measured against.</div></div>
+      <div class="term-row" data-t="ostium dex real world assets"><div class="term-word">Ostium</div><div class="term-def">One of the DEXs Liquid routes orders to. Specialises in real-world assets including FX, commodities, and global equities. Charges fees on entry only — unlike Hyperliquid which charges entry and exit.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="P">
+      <div class="alpha-head">P</div>
+      <div class="term-row" data-t="perpetual futures perp contract no expiry"><div class="term-word">Perpetual Futures (Perp)</div><div class="term-def">A derivative contract tracking an asset's price with no expiration date. Hold long or short indefinitely with sufficient margin. Anchored to spot via the funding rate mechanism.</div></div>
+      <div class="term-row" data-t="pnl profit loss unrealized realized"><div class="term-word">PnL</div><div class="term-def">Profit and Loss. Unrealized PnL fluctuates in real time with mark price. Realized PnL locks in when you close. All PnL on Liquid settles in USDC.</div></div>
+      <div class="term-row" data-t="premium component funding rate above below spot"><div class="term-word">Premium Component</div><div class="term-def">Part of the funding rate formula. Measures how far the perp price is trading above or below the oracle/spot price. Positive premium = perp above spot = longs pay shorts.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="S">
+      <div class="alpha-head">S</div>
+      <div class="term-row" data-t="short sell bearish"><div class="term-word">Short</div><div class="term-def">A trade that profits when the asset price goes down. You go short when you believe an asset will decrease in value.</div></div>
+      <div class="term-row" data-t="slippage price impact execution"><div class="term-word">Slippage</div><div class="term-def">The gap between your intended trade price and actual execution price. Large orders move the market against you. TWAP orders minimize slippage by spreading execution over time.</div></div>
+      <div class="term-row" data-t="stop loss sl risk management"><div class="term-word">Stop Loss (SL)</div><div class="term-def">An order that auto-closes your position if price moves against you past a set level. Triggered by mark price. Your primary downside protection tool on any leveraged trade.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="T">
+      <div class="alpha-head">T</div>
+      <div class="term-row" data-t="take profit tp lock in gains"><div class="term-word">Take Profit (TP)</div><div class="term-def">An order that auto-closes your position when price hits a target in your favour. Triggered by mark price. Locks in gains without manual monitoring.</div></div>
+      <div class="term-row" data-t="twap time weighted average price order large"><div class="term-word">TWAP</div><div class="term-def">Time-Weighted Average Price. Splits a large order into smaller chunks executed at intervals. Reduces market impact and achieves a better average fill. Orders can be randomised to prevent front-running.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="U">
+      <div class="alpha-head">U</div>
+      <div class="term-row" data-t="unrealized pnl open position mark price"><div class="term-word">Unrealized PnL</div><div class="term-def">Profit or loss on an open position calculated from current mark price. Fluctuates constantly. Not locked in until you close the trade.</div></div>
+    </div>
+
+    <div class="alpha-group" data-g="V">
+      <div class="alpha-head">V</div>
+      <div class="term-row" data-t="vault pooled onchain strategy hlp"><div class="term-word">Vault</div><div class="term-def">An onchain pooled account on Hyperliquid where depositors share exposure to a trading strategy. PnL distributed pro rata. Vault leaders earn 10% of gains (not applicable to HLP). Not a savings product — carries strategy risk.</div></div>
+    </div>
+
+  </div>
+
+  <div class="no-results" id="noRes">No matching terms found.</div>
+
+  <div class="nav-footer">
+    <a href="points.html" class="nav-btn">← Points & Referrals</a>
+    <a href="index.html" class="nav-btn">↩ Back to Home</a>
+  </div>
+</div>
+
+<script>
+function filterGlossary() {
+  const q = document.getElementById('gsearch').value.toLowerCase().trim();
+  const rows = document.querySelectorAll('.term-row');
+  const groups = document.querySelectorAll('.alpha-group');
+  let any = false;
+  rows.forEach(r => {
+    const t = (r.dataset.t || '') + r.textContent.toLowerCase();
+    const show = !q || t.includes(q);
+    r.classList.toggle('hidden', !show);
+    if (show) any = true;
+  });
+  groups.forEach(g => {
+    const vis = g.querySelectorAll('.term-row:not(.hidden)').length > 0;
+    g.classList.toggle('hidden', !vis);
+  });
+  document.getElementById('noRes').style.display = any ? 'none' : 'block';
+}
+</script>
+
+<footer>
+  <p>Built from <a href="https://docs.tryliquid.xyz" target="_blank">docs.tryliquid.xyz</a> &nbsp;·&nbsp; Unofficial community handbook</p>
+  <p><a href="https://tryliquid.xyz" target="_blank">tryliquid.xyz ↗</a></p>
+</footer>
+</body>
+</html>
